@@ -26,66 +26,128 @@ const Hex = ({ q, r, active = false, title = "", subtitle = "", delay = 0 }: any
 
     const titleLines = title ? title.split('\n') : [];
 
+    // Distance from center for ripple delay (inactive cells only)
+    const dist = (Math.abs(q) + Math.abs(r) + Math.abs(q + r)) / 2;
+
+    if (active) {
+        return (
+            <motion.g
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: false, margin: "-80px" }}
+                transition={{ duration: 0.6, delay }}
+                className="group cursor-default"
+            >
+                {/* Background Fill - pulses on scroll */}
+                <motion.polygon
+                    points={getHexPoints(cx, cy, DRAW_R)}
+                    initial={{ fill: "rgba(184,165,255,0)" }}
+                    whileInView={{
+                        fill: [
+                            "rgba(184,165,255,0)",
+                            "rgba(184,165,255,0.15)",
+                            "rgba(184,165,255,0.06)"
+                        ]
+                    }}
+                    viewport={{ once: false, margin: "-80px" }}
+                    transition={{ duration: 1.2, delay: delay + 0.2, ease: "easeOut" }}
+                    className="group-hover:!fill-[rgba(184,165,255,0.2)]"
+                />
+
+                {/* Border - glows on scroll */}
+                <motion.polygon
+                    points={getHexPoints(cx, cy, DRAW_R)}
+                    fill="none"
+                    strokeWidth={1.5}
+                    initial={{ opacity: 0.15 }}
+                    whileInView={{
+                        opacity: [0.15, 1, 0.6],
+                        filter: [
+                            "drop-shadow(0 0 0px rgba(184,165,255,0))",
+                            "drop-shadow(0 0 15px rgba(184,165,255,0.8))",
+                            "drop-shadow(0 0 6px rgba(184,165,255,0.3))"
+                        ]
+                    }}
+                    viewport={{ once: false, margin: "-80px" }}
+                    transition={{ duration: 1.4, delay, ease: "easeOut" }}
+                    className="stroke-primary group-hover:drop-shadow-[0_0_20px_rgba(184,165,255,0.8)] transition-all duration-500"
+                />
+
+                {/* Text Overlay */}
+                {titleLines.length > 0 && (
+                    <motion.g
+                        initial={{ opacity: 0, y: 8 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: false, margin: "-80px" }}
+                        transition={{ duration: 0.5, delay: delay + 0.3 }}
+                    >
+                        {titleLines.length === 2 ? (
+                            <>
+                                <text x={cx} y={cy - 12} textAnchor="middle" dominantBaseline="middle" className="text-[18px] font-medium fill-white/90 tracking-wide group-hover:fill-white group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-500">
+                                    {titleLines[0]}
+                                </text>
+                                <text x={cx} y={cy + 10} textAnchor="middle" dominantBaseline="middle" className="text-[18px] font-medium fill-white/90 tracking-wide group-hover:fill-white group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-500">
+                                    {titleLines[1]}
+                                </text>
+                            </>
+                        ) : (
+                            <text x={cx} y={cy - 2} textAnchor="middle" dominantBaseline="middle" className="text-[20px] font-medium fill-white/90 tracking-wide group-hover:fill-white group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-500">
+                                {title}
+                            </text>
+                        )}
+
+                        {subtitle && (
+                            <text x={cx} y={cy + 34} textAnchor="middle" dominantBaseline="middle" className="text-[10px] sm:text-[11px] font-bold fill-gray-500 tracking-[0.2em] uppercase group-hover:fill-primary/80 transition-colors duration-500">
+                                {subtitle}
+                            </text>
+                        )}
+                    </motion.g>
+                )}
+            </motion.g>
+        );
+    }
+
+    // Inactive hex - ripple highlight on scroll
     return (
         <motion.g
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: false, margin: "-100px" }}
             transition={{ duration: 0.8, delay }}
-            className={active ? "group cursor-default" : ""}
         >
-            {/* Background Fill for Hover */}
-            {active && (
-                <polygon
-                    points={getHexPoints(cx, cy, DRAW_R)}
-                    className="fill-transparent group-hover:fill-primary/20 transition-colors duration-500"
-                />
-            )}
-
-            {/* Main Border */}
+            {/* Background fill pulse */}
             <motion.polygon
-                initial={active ? { pathLength: 0, opacity: 0 } : { opacity: 0 }}
-                whileInView={active ? { pathLength: 1, opacity: 1 } : { opacity: 0.05 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 1.5, delay, ease: "easeOut" }}
                 points={getHexPoints(cx, cy, DRAW_R)}
-                fill="none"
-                strokeWidth={active ? 1.5 : 1}
-                className={active
-                    ? "stroke-white/30 group-hover:stroke-primary group-hover:drop-shadow-[0_0_20px_rgba(184,165,255,0.8)] transition-all duration-500"
-                    : "stroke-white"}
+                initial={{ fill: "rgba(184,165,255,0)" }}
+                whileInView={{
+                    fill: [
+                        "rgba(184,165,255,0)",
+                        "rgba(184,165,255,0.12)",
+                        "rgba(184,165,255,0)"
+                    ]
+                }}
+                viewport={{ once: false, margin: "-50px" }}
+                transition={{
+                    duration: 1.8,
+                    delay: delay + dist * 0.15,
+                    ease: "easeInOut"
+                }}
             />
 
-            {/* Text Overlay */}
-            {active && titleLines.length > 0 && (
-                <motion.g
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: delay + 0.6 }}
-                >
-                    {titleLines.length === 2 ? (
-                        <>
-                            <text x={cx} y={cy - 12} textAnchor="middle" dominantBaseline="middle" className="text-[18px] font-medium fill-white/90 tracking-wide group-hover:fill-white group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-500">
-                                {titleLines[0]}
-                            </text>
-                            <text x={cx} y={cy + 10} textAnchor="middle" dominantBaseline="middle" className="text-[18px] font-medium fill-white/90 tracking-wide group-hover:fill-white group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-500">
-                                {titleLines[1]}
-                            </text>
-                        </>
-                    ) : (
-                        <text x={cx} y={cy - 2} textAnchor="middle" dominantBaseline="middle" className="text-[20px] font-medium fill-white/90 tracking-wide group-hover:fill-white group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-500">
-                            {title}
-                        </text>
-                    )}
-
-                    {subtitle && (
-                        <text x={cx} y={cy + 34} textAnchor="middle" dominantBaseline="middle" className="text-[10px] sm:text-[11px] font-bold fill-gray-500 tracking-[0.2em] uppercase group-hover:fill-primary/80 transition-colors duration-500">
-                            {subtitle}
-                        </text>
-                    )}
-                </motion.g>
-            )}
+            {/* Border */}
+            <motion.polygon
+                initial={{ opacity: 0, strokeWidth: 1 }}
+                whileInView={{
+                    opacity: [0, 0.4, 0.08],
+                    strokeWidth: [1, 1.5, 1]
+                }}
+                viewport={{ once: false, margin: "-100px" }}
+                transition={{ duration: 2, delay: delay + dist * 0.15, ease: "easeInOut" }}
+                points={getHexPoints(cx, cy, DRAW_R)}
+                fill="none"
+                strokeWidth={1}
+                className="stroke-white"
+            />
         </motion.g>
     );
 };
@@ -116,7 +178,7 @@ export function SecurityFeatures() {
     const allNodes = [...gridNodes, ...activeNodes];
 
     return (
-        <section className="py-24 md:py-32 relative overflow-hidden bg-[#050505] border-y border-white/5">
+        <section className="py-32 md:py-40 relative overflow-hidden bg-[#050505] border-y border-white/5">
 
             {/* Center Glow under the honeycomb */}
             <div className="absolute top-1/2 left-3/4 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[150px] pointer-events-none z-0"></div>
@@ -129,9 +191,9 @@ export function SecurityFeatures() {
                         <motion.h2
                             initial={{ opacity: 0, x: -30 }}
                             whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
+                            viewport={{ once: false }}
                             transition={{ duration: 0.6 }}
-                            className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold mb-6 tracking-tight leading-[1.1] text-white"
+                            className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold mb-6 tracking-tight leading-snug text-white"
                         >
                             Protecting your most <br />
                             <span className="text-primary font-serif italic drop-shadow-[0_0_15px_rgba(184,165,255,0.4)]">secure</span> sensitive data.
@@ -140,7 +202,7 @@ export function SecurityFeatures() {
                         <motion.p
                             initial={{ opacity: 0, x: -30 }}
                             whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
+                            viewport={{ once: false }}
                             transition={{ duration: 0.6, delay: 0.1 }}
                             className="text-lg text-gray-400 max-w-xl mb-10 leading-relaxed font-light"
                         >
@@ -150,14 +212,14 @@ export function SecurityFeatures() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
+                            viewport={{ once: false }}
                             transition={{ duration: 0.6, delay: 0.2 }}
                             className="flex flex-col gap-5"
                         >
                             {[
                                 'Data encrypted at rest and in transit.',
                                 'Multi-Academy Trust data segregation.',
-                                'Nightly backups and failover redundancy.'
+                                'Built on enterprise-grade cloud infrastructure.'
                             ].map((item, i) => (
                                 <div key={i} className="flex items-center gap-4">
                                     <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">

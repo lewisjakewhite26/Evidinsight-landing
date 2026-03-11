@@ -4,26 +4,28 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
-    FileText,
-    Search,
-    Footprints,
-    BookOpen,
-    MessageSquare,
-    BarChart3,
+    ClipboardCheck,
     Users,
-    CalendarCheck
+    Eye,
+    Route,
+    BookOpen,
+    MessageCircle,
+    FileText,
+    Clock,
+    Table2
 } from "lucide-react";
 
-// The list of tools we know about so far.
+// The list of tools matching the real EvidInsight product.
 const EVIDINSIGHT_TOOLS = [
-    { id: "sef", name: "SEF", icon: FileText, color: "bg-blue-500", label: "Self Evaluation" },
-    { id: "sampling", name: "Case Sampling", icon: Search, color: "bg-purple-500", label: "Deep Dives" },
-    { id: "walks", name: "Learning Walks", icon: Footprints, color: "bg-green-500", label: "Observations" },
-    { id: "scrutiny", name: "Work Scrutiny", icon: BookOpen, color: "bg-orange-500", label: "Book Looks" },
-    { id: "pupil", name: "Pupil Voice", icon: MessageSquare, color: "bg-pink-500", label: "Surveys" },
-    { id: "staff", name: "Staff Voice", icon: Users, color: "bg-indigo-500", label: "Feedback" },
-    { id: "appraisal", name: "Appraisals", icon: CalendarCheck, color: "bg-teal-500", label: "Performance" },
-    { id: "analytics", name: "Analytics", icon: BarChart3, color: "bg-rose-500", label: "Live Data" },
+    { id: "sef", name: "School Evaluation Form", shortName: "SEF", icon: ClipboardCheck, color: "bg-indigo-500", label: "Self Evaluation" },
+    { id: "sampling", name: "Case Sampling", shortName: "Sampling", icon: Users, color: "bg-purple-600", label: "Deep Dives" },
+    { id: "observation", name: "Lesson Observation", shortName: "Observe", icon: Eye, color: "bg-rose-600", label: "Observations" },
+    { id: "walks", name: "Learning Walk", shortName: "Walks", icon: Route, color: "bg-teal-500", label: "Walkthroughs" },
+    { id: "scrutiny", name: "Work Scrutiny", shortName: "Scrutiny", icon: BookOpen, color: "bg-emerald-600", label: "Book Looks" },
+    { id: "pupil", name: "Pupil Voice", shortName: "Pupil", icon: MessageCircle, color: "bg-amber-600", label: "Surveys" },
+    { id: "iep", name: "Individual Education Plan", shortName: "IEP", icon: FileText, color: "bg-red-500", label: "SEND Support" },
+    { id: "behaviour", name: "Behaviour Reflection", shortName: "Behaviour", icon: Clock, color: "bg-teal-700", label: "Incidents" },
+    { id: "provision", name: "Costed Provision", shortName: "Provision", icon: Table2, color: "bg-green-800", label: "Interventions" },
 ];
 
 export function InteractiveAppPreview() {
@@ -33,11 +35,11 @@ export function InteractiveAppPreview() {
     const ActiveIcon = activeToolData.icon;
 
     return (
-        <section className="py-24 relative overflow-hidden">
+        <section className="py-32 md:py-40 relative overflow-hidden">
             <div className="container mx-auto px-4">
 
                 <div className="text-center mb-16 relative z-10 max-w-3xl mx-auto">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                    <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-snug">
                         One platform. <br />
                         <span className="font-serif italic text-primary">Absolute clarity.</span>
                     </h2>
@@ -50,17 +52,49 @@ export function InteractiveAppPreview() {
 
                     {/* LEFT: Phone App Controller */}
                     <div className="relative w-[300px] h-[600px] bg-black rounded-[3rem] border-[8px] border-zinc-800 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden shrink-0">
-                        {/* Phone Hardware Details */}
+                        {/* Dynamic Island */}
                         <div className="absolute top-0 inset-x-0 h-7 flex justify-center z-20">
-                            <div className="w-1/3 h-5 bg-zinc-800 rounded-b-xl"></div>
+                            <div className="w-[100px] h-[25px] bg-black rounded-b-2xl"></div>
                         </div>
 
                         {/* Phone Screen Output */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-black p-6 pt-16 flex flex-col">
-                            <div className="text-white text-xl font-bold mb-8 opacity-90">Good morning</div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-black flex flex-col">
+                            {/* Status Bar */}
+                            <div className="flex items-center justify-between px-8 pt-2 pb-1 text-white text-[11px] font-semibold z-10">
+                                <span>10:10</span>
+                                <div className="flex items-center gap-1">
+                                    {/* Signal bars */}
+                                    <svg width="16" height="12" viewBox="0 0 16 12" className="fill-white">
+                                        <rect x="0" y="9" width="3" height="3" rx="0.5" opacity="1" />
+                                        <rect x="4" y="6" width="3" height="6" rx="0.5" opacity="1" />
+                                        <rect x="8" y="3" width="3" height="9" rx="0.5" opacity="1" />
+                                        <rect x="12" y="0" width="3" height="12" rx="0.5" opacity="0.3" />
+                                    </svg>
+                                    {/* WiFi */}
+                                    <svg width="14" height="12" viewBox="0 0 24 24" className="fill-white" stroke="none">
+                                        <path d="M12 18c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm0-4c-1.82 0-3.47.7-4.71 1.84a.996.996 0 1 0 1.41 1.41A4.98 4.98 0 0 1 12 16c1.38 0 2.63.56 3.54 1.47.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41A6.96 6.96 0 0 0 12 14zm0-4c-2.92 0-5.56 1.17-7.48 3.07a.996.996 0 1 0 1.41 1.41A8.94 8.94 0 0 1 12 12c2.48 0 4.73 1.01 6.36 2.64.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41A10.94 10.94 0 0 0 12 10z" />
+                                    </svg>
+                                    {/* Battery */}
+                                    <svg width="22" height="12" viewBox="0 0 25 12" className="fill-white">
+                                        <rect x="0" y="0" width="21" height="12" rx="2" stroke="white" strokeWidth="1" fill="none" />
+                                        <rect x="21" y="3" width="3" height="6" rx="1" opacity="0.4" />
+                                        <rect x="1.5" y="1.5" width="16" height="9" rx="1" fill="white" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* App Header with E Logo */}
+                            <div className="flex items-center gap-3 px-6 pt-4 pb-5">
+                                <img
+                                    src="/logo.svg"
+                                    alt="EvidInsight"
+                                    className="h-7 w-auto brightness-0 invert opacity-80"
+                                />
+                                <span className="text-white/60 text-sm font-medium tracking-wide">EvidInsight</span>
+                            </div>
 
                             {/* App Icon Grid */}
-                            <div className="grid grid-cols-4 gap-y-6 gap-x-2">
+                            <div className="grid grid-cols-3 gap-y-5 gap-x-3 px-5">
                                 {EVIDINSIGHT_TOOLS.map((tool) => {
                                     const Icon = tool.icon;
                                     const isActive = activeTool === tool.id;
@@ -84,22 +118,19 @@ export function InteractiveAppPreview() {
                                                 )}
                                             </div>
                                             <span className={cn(
-                                                "text-[10px] whitespace-nowrap leading-tight transition-colors",
+                                                "text-[9px] text-center leading-tight transition-colors w-full truncate",
                                                 isActive ? "text-white font-medium" : "text-gray-500 group-hover:text-gray-300"
                                             )}>
-                                                {tool.name}
+                                                {tool.shortName}
                                             </span>
                                         </button>
                                     );
                                 })}
                             </div>
 
-                            {/* Bottom Dock Mockup */}
-                            <div className="mt-auto mx-auto w-full max-w-[200px] h-16 bg-white/10 backdrop-blur-md rounded-3xl border border-white/5 flex items-center justify-around px-4">
-                                <div className="w-8 h-8 rounded-full bg-white/20"></div>
-                                <div className="w-8 h-8 rounded-full bg-white/10"></div>
-                                <div className="w-8 h-8 rounded-full bg-white/10"></div>
-                                <div className="w-8 h-8 rounded-full bg-white/10"></div>
+                            {/* Home Indicator */}
+                            <div className="mt-auto flex justify-center pb-2">
+                                <div className="w-32 h-1 bg-white/20 rounded-full"></div>
                             </div>
                         </div>
                     </div>
@@ -114,7 +145,7 @@ export function InteractiveAppPreview() {
                                 <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
                             </div>
                             <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1 bg-black/40 rounded-md border border-white/5 text-xs text-gray-400">
-                                <Search className="w-3 h-3" />
+                                <Eye className="w-3 h-3" />
                                 evidinsight.com/app/{activeTool}
                             </div>
                         </div>
@@ -191,6 +222,6 @@ export function InteractiveAppPreview() {
 
                 </div>
             </div>
-        </section>
+        </section >
     );
 }

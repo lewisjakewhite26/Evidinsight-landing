@@ -82,7 +82,7 @@ const Char = ({
     cursorClassName?: string;
 }) => {
     const scrollOffset = 20;
-    const pixelsPerChar = 7;
+    const pixelsPerChar = 14;
     const threshold = scrollOffset + index * pixelsPerChar;
 
     // Snap opacity from 0 to 1 precisely when scrolled past threshold

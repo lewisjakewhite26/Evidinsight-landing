@@ -30,11 +30,11 @@ export function InteractiveParallax() {
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: false, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
                 className="text-center mb-16 md:mb-24 z-10 max-w-2xl px-4"
             >
-                <h2 className="text-4xl md:text-5xl font-bold mb-6">See the <span className="font-serif italic text-primary">impact.</span></h2>
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-snug">See the <span className="font-serif italic text-primary">impact.</span></h2>
                 <p className="text-xl text-gray-400">Instantly transform fragmented paperwork into strategic, actionable insights for your entire trust.</p>
             </motion.div>
 
